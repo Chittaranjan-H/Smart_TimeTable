@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Class Timetable</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>🎓TIME TABLE</h2>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-target="dashboard-view">Dashboard</button>
+                <button class="nav-btn" data-target="today-view">Today's Classes</button>
+                <button class="nav-btn" data-target="timetable-view">Weekly Timetable</button>
+                <button class="nav-btn" data-target="manage-view">Edit Timetable</button>
+                <button class="nav-btn" data-target="settings-view">Settings</button>
+            </nav>
+            <div class="sidebar-footer">
+                <span id="current-theme-label">Theme: Light</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="greeting-box">
+                    <h1 id="greeting-text">Good Morning 👋</h1>
+                    <p id="date-text">Thursday, September 3, 2026</p>
+                </div>
+                <div class="header-actions">
+                    <button id="notification-permission-btn" class="secondary-btn">Enable Notifications 🔔</button>
+                </div>
+            </header>
+
+            <div id="toast-container"></div>
+
+            <section id="dashboard-view" class="view-section active">
+                <div class="dashboard-grid">
+                    <div class="card running-card" id="running-card">
+                        <div class="card-header">
+                            <span class="badge running-badge">🟢 RUNNING NOW</span>
+                            <div class="menu-container">
+                                <button class="menu-dots-btn" id="running-menu-btn" aria-label="Subject Info">⋮</button>
+                                <div class="popover-menu" id="running-popover">
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="card-body" id="running-body">
+                            </div>
+                    </div>
+
+                    <div class="card next-card" id="next-card">
+                        <div class="card-header">
+                            <span class="badge next-badge">⏳ NEXT CLASS</span>
+                        </div>
+                        <div class="card-body" id="next-body">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="section-block">
+                    <h3>Today's Timeline Overview</h3>
+                    <div id="dashboard-today-list" class="timeline-list">
+                        </div>
+                </div>
+            </section>
+
+            <section id="today-view" class="view-section">
+                <h2>Today's Detailed Schedule</h2>
+                <div id="full-today-list" class="timeline-list-detailed">
+                    </div>
+            </section>
+
+            <section id="timetable-view" class="view-section">
+                <div class="section-header-row">
+                    <h2>Weekly Schedule</h2>
+                    <div class="export-import-btns">
+                        <button id="export-btn" class="secondary-btn">Export JSON</button>
+                        <label for="import-file" class="secondary-btn file-upload-label">Import JSON</label>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="weekly-matrix-table" class="matrix-table">
+                        </table>
+                </div>
+            </section>
+
+            <section id="manage-view" class="view-section">
+                <h2>Manage Timetable Entries</h2>
+                <div class="form-container card">
+                    <h3 id="form-title">Add New Class</h3>
+                    <form id="class-form">
+                        <input type="hidden" id="edit-index" value="">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Day</label>
+                                <select id="input-day" required>
+                                    <option value="Monday">Monday</option>
+                                    <option value="Tuesday">Tuesday</option>
+                                    <option value="Wednesday">Wednesday</option>
+                                    <option value="Thursday">Thursday</option>
+                                    <option value="Friday">Friday</option>
+                                    <option value="Saturday">Saturday</option>
+                                    <option value="Sunday">Sunday</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Start Time</label>
+                                <input type="time" id="input-start" required>
+                            </div>
+                            <div class="form-group">
+                                <label>End Time</label>
+                                <input type="time" id="input-end" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject Name</label>
+                                <input type="text" id="input-subject" placeholder="e.g. Python Programming" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Teacher</label>
+                                <input type="text" id="input-teacher" placeholder="e.g. Rahul">
+                            </div>
+                            <div class="form-group">
+                                <label>Room / Lab</label>
+                                <input type="text" id="input-room" placeholder="e.g. Lab 2">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="primary-btn" id="save-class-btn">Save Class</button>
+                            <button type="button" id="cancel-edit-btn" class="secondary-btn" style="display:none;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section-block" style="margin-top: 2rem;">
+                    <h3>Existing Entries</h3>
+                    <div id="editable-entries-list" class="entries-grid">
+                        </div>
+                </div>
+            </section>
+
+            <section id="settings-view" class="view-section">
+                <h2>Preferences & Settings</h2>
+                <div class="card settings-card">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Dark Mode</h4>
+                            <p>Toggle between light and dark themes</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <hr class="setting-divider">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Browser & In-App Notifications</h4>
+                            <p>Enable alerts before classes start</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="notification-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <hr class="setting-divider">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Reminder Lead Time</h4>
+                            <p>How many minutes before class to trigger alert</p>
+                        </div>
+                        <select id="reminder-time-select" class="styled-select">
+                            <option value="5">5 minutes before</option>
+                            <option value="10">10 minutes before</option>
+                            <option value="15" selected>15 minutes before</option>
+                            <option value="30">30 minutes before</option>
+                        </select>
+                    </div>
+                    <hr class="setting-divider">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Reset Timetable</h4>
+                            <p>Restore default uploaded curriculum matrix</p>
+                        </div>
+                        <button id="reset-default-btn" class="danger-btn">Reset Defaults</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="subject-modal" class="modal">
+        <div class="modal-content card">
+            <span class="close-modal" id="close-modal-btn">&times;</span>
+            <div id="modal-subject-details">
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
